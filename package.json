@@ -1,0 +1,19 @@
+{
+  "name": "blitz-starterkit-typescript",
+  "version": "1.0.0",
+  "description": "Blitz starter kit using TypeScript and WebSocket",
+  "main": "index.ts",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Coveo",
+  "license": "MIT",
+  "dependencies": {
+    "@types/ws": "^8.18.1",
+    "typescript": "^5.9.2",
+    "ws": "^8.18.3"
+  }
+}
