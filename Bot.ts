@@ -109,11 +109,8 @@ function getShortestPath(pos1: Position, pos2: Position): Position[] {
     }
     //Switch between x turn and y turn after each move
     isXturn = !isXturn
-    console.log(current)
     paths.push({ x: current.x, y: current.y }) // Push a copy
   }
-  console.log('DONE')
-  console.log(paths)
   return paths
 }
 
