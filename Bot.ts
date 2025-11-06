@@ -47,8 +47,48 @@ export class Bot {
   }
 }
 
-function getShortestPath(first: Position, second: Position): Position[] {
-  return []
+function getShortestPath(pos1: Position, pos2: Position): Position[] {
+    let paths:Position[] =[]
+        let deltaX = pos2.x - pos1.x;
+        let deltaY = pos2.y - pos1.y;
+        let isXturn = true // Assume False means isYturn
+        let current: Position = {x: pos1.x, y: pos1.y}; // Create a copy
+        
+        paths.push({x: current.x, y: current.y}) // Push a copy
+        
+        while(Math.abs(deltaX) >0 || Math.abs(deltaY) >0){
+            //Check if deltaX or deltaY are 0 (we shouldnt x if delta x is 0)
+            if(deltaX ==0 && isXturn){
+                isXturn = false;
+                continue;
+            }
+            if(deltaY ==0 && !isXturn){
+                isXturn = true;
+                continue;
+            }
+
+            //Next Position for either X or Y
+
+            //Only Move X
+            if(isXturn){
+                current.x = deltaX>0 ? current.x+1 : deltaX<0 ? current.x-1 : current.x //Safety check to make sure we dont move x if deltaX is 0
+                deltaX = deltaX>0 ? deltaX-1 : deltaX<0 ? deltaX+1 : deltaX
+            }
+            //Only Move Y
+            if(!isXturn){
+                current.y = deltaY>0 ? current.y+1 : deltaY<0 ? current.y-1 : current.y //Safety check to make sure we dont move x if deltaX is 0
+                deltaY = deltaY>0? deltaY-1 : deltaY<0? deltaY+1 : deltaY
+            }
+            //Switch between x turn and y turn after each move
+            isXturn = !isXturn;
+            console.log(current)
+            paths.push({x: current.x, y: current.y}) // Push a copy
+            
+        }
+        console.log("DONE")
+        console.log(paths)
+        return paths
+        
 }
 
 function connectToNetwork(
