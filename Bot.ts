@@ -18,17 +18,25 @@ export class Bot {
   getNextMoves(gameMessage: TeamGameState): Action[] {
     const actions: Action[] = []
 
+    if (gameMessage.currentTickNumber % 100 === 0) {
+      console.log(gameMessage.score)
+    }
+
     // On the first tick, we calculate our network
     if (gameMessage.currentTickNumber === 1) {
       const colonies = gameMessage.map.colonies
-      let partialNetwork: Position[][] = [
-        // @todo implement shortest path function
-        getShortestPath(colonies[0].position, colonies[1].position), // assume at least 2 colonies
-      ]
-      for (let i = 2; i < colonies.length; i++) {
-        partialNetwork = connectToNetwork(partialNetwork, colonies[i].position)
+
+      const averageColonyPosition = getAveragePosition(
+        colonies.map((colony) => colony.position)
+      )
+
+      for (const colony of colonies) {
+        const pathToCenter = getShortestPath(
+          colony.position,
+          averageColonyPosition
+        )
+        this.network.push(pathToCenter)
       }
-      this.network = partialNetwork
     }
 
     let biomassForThisTurn = gameMessage.maximumNumberOfBiomassPerTurn
@@ -138,4 +146,12 @@ function connectToNetwork(
   }
 
   return partialNetwork
+}
+
+function getAveragePosition(positions: Position[]): Position {
+  const averageX =
+    positions.reduce((sum, pos) => sum + pos.x, 0) / positions.length
+  const averageY =
+    positions.reduce((sum, pos) => sum + pos.y, 0) / positions.length
+  return { x: Math.round(averageX), y: Math.round(averageY) }
 }
