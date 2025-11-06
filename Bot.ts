@@ -28,6 +28,7 @@ export class Bot {
       for (let i = 2; i < colonies.length; i++) {
         partialNetwork = connectToNetwork(partialNetwork, colonies[i].position)
       }
+      this.network = partialNetwork
     }
 
     let biomassForThisTurn = gameMessage.maximumNumberOfBiomassPerTurn
