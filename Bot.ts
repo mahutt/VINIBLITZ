@@ -95,5 +95,22 @@ function connectToNetwork(
   partialNetwork: Position[][],
   nextColony: Position
 ): Position[][] {
-  return []
+  let shortestPathToNextColony: Position[] = [];
+
+  for (const structure of partialNetwork) {
+    for (const position of structure) {
+      const path = getShortestPath(nextColony, position);
+      
+      if (shortestPathToNextColony.length === 0 || path.length < shortestPathToNextColony.length) {
+        shortestPathToNextColony = path;
+      }
+    }
+  }
+    
+  if (shortestPathToNextColony.length > 0) {
+    return [...partialNetwork, shortestPathToNextColony];
+  }
+  
+  return partialNetwork;
 }
+
