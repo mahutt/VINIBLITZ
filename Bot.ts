@@ -19,7 +19,7 @@ export class Bot {
     const actions: Action[] = []
 
     // On the first tick, we calculate our network
-    if (gameMessage.currentTickNumber === 0) {
+    if (gameMessage.currentTickNumber === 1) {
       const colonies = gameMessage.map.colonies
       let partialNetwork: Position[][] = [
         // @todo implement shortest path function
@@ -30,21 +30,46 @@ export class Bot {
       }
     }
 
-    for (let i = 0; i < gameMessage.maximumNumberOfBiomassPerTurn; i++) {
+    let biomassForThisTurn = gameMessage.maximumNumberOfBiomassPerTurn
+    while (biomassForThisTurn > 0) {
+      const nextPosition = this.network[this.currentBranch][this.currentStep]
+
+      if (isColonyPosition(gameMessage, nextPosition)) {
+        this.incrementStepAndBranch()
+        continue
+      }
+
       actions.push({
         type: ActionType.ADD_BIOMASS,
-        position: this.network[this.currentBranch][this.currentStep],
+        position: nextPosition,
         amount: 1,
       } as ActionAddBiomass)
-      this.currentStep =
-        (this.currentStep + 1) % this.network[this.currentBranch].length
-      if (this.currentStep === 0) {
-        this.currentBranch = (this.currentBranch + 1) % this.network.length
-      }
+      this.incrementStepAndBranch()
+      biomassForThisTurn = biomassForThisTurn - 1
     }
 
     return actions
   }
+
+  incrementStepAndBranch() {
+    this.currentStep =
+      (this.currentStep + 1) % this.network[this.currentBranch].length
+    if (this.currentStep === 0) {
+      this.currentBranch = (this.currentBranch + 1) % this.network.length
+    }
+  }
+}
+
+function isColonyPosition(
+  gameMessage: TeamGameState,
+  position: Position
+): boolean {
+  for (const colony of gameMessage.map.colonies) {
+    if (colony.position.x === position.x && colony.position.y === position.y) {
+      return true
+    }
+  }
+  return false
 }
 
 function getShortestPath(pos1: Position, pos2: Position): Position[] {
